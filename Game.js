@@ -6,9 +6,15 @@ ParticleMotionApplet.Game = function (game) {
     this.timer;
     this.music;
     this.ding;
-    this.sprite;
+    this.cannonball;
     this.restartKey;
+    this.angleUpKey;
+    this.angleDownKey;
+    this.powerUpKey;
+    this.powerDownKey;
+    this.fireKey;
     this.cannon;
+    this.power;
 };
 
 ParticleMotionApplet.Game.prototype = {
@@ -21,15 +27,21 @@ ParticleMotionApplet.Game.prototype = {
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        this.sprite = this.add.sprite(0, 400, 'heart');
-        this.sprite.velocity = 0;
-        this.sprite.enableBody = true;
+        this.cannonball = this.add.sprite(-100, -100, 'cannonball');
+        this.cannonball.velocity = 0;
+        this.cannonball.enableBody = true;
 
-        this.game.physics.arcade.enable([this.sprite]);
-        
-        this.cannon = this.add.sprite(0, 400, 'cannon');
+        this.game.physics.arcade.enable([this.cannonball]);
+
+        this.cannon = this.add.sprite(70, 400, 'cannon');
+        this.cannon.anchor.setTo(0.5, 0.5);
 
         restartKey = this.input.keyboard.addKey(Phaser.Keyboard.R);
+        angleUpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
+        angleDownKey = this.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+        fireKey = this.input.keyboard.addKey(Phaser.Keyboard.F);
+        powerUpKey = this.input.keyboard.addKey(Phaser.Keyboard.W);
+        powerDownKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
 
         this.music = this.add.audio('game_audio');
         this.music.play('', 0, 0.3, true);   //marker, position, volume, loop
@@ -71,7 +83,7 @@ ParticleMotionApplet.Game.prototype = {
     },*/
 
     enemyHitsPlayer: function(){
-        this.sprite.kill();
+        this.cannonball.kill();
         this.gameover = true;
         this.timer.pause();
         this.music.stop();
@@ -93,7 +105,7 @@ ParticleMotionApplet.Game.prototype = {
                 this.tooClose = true;
                 while(this.tooClose == true){
                     this.bullet.reset(Math.random() * 1600, Math.random() * 800);
-                    if(this.bullet.body.x > (this.sprite.x + 300) || this.bullet.body.x < (this.sprite.x - 300) || this.bullet.body.y > (this.sprite.y + 300) || this.bullet.body.y < (this.sprite.y - 300)){
+                    if(this.bullet.body.x > (this.cannonball.x + 300) || this.bullet.body.x < (this.cannonball.x - 300) || this.bullet.body.y > (this.cannonball.y + 300) || this.bullet.body.y < (this.cannonball.y - 300)){
                         this.tooClose = false;
                     }
                     else{
@@ -106,15 +118,28 @@ ParticleMotionApplet.Game.prototype = {
         }
     },*/
 
-    directionUpdate: function(bullt) {
+    fireCannonball: function(){
+        //if(this.game.time.now > this.shootTime){
+            if(fireKey.isDown){
+                this.cannonball.position.x = 70;
+                this.cannonball.position.y = 400;
+                //this.directionUpdate(this.cannonball);
+                this.shootTime = this.game.time.now + 200;
+            }
+        //}
+    },
+
+    /*directionUpdate: function(bullt) {
         // Calculate direction towards player
-        this.toPlayerX = this.sprite.x - bullt.body.x;
-        this.toPlayerY = this.sprite.y - bullt.body.y;
+        this.toPlayerX = this.cannonball.x - bullt.body.x;
+        this.toPlayerY = this.cannonball.y - bullt.body.y;
         // Move towards the player
         bullt.body.velocity.x = this.toPlayerX;
         bullt.body.velocity.y = this.toPlayerY;
-        // Rotate us to face the player
-        bullt.rotation = Math.atan2(this.toPlayerY, this.toPlayerX);
+    },*/
+    
+    directionUpdate: function(){
+        
     },
 
     updateSeconds: function(){
@@ -131,13 +156,24 @@ ParticleMotionApplet.Game.prototype = {
             }
         }, this)
     },*/
-    
+
+    rotateCannon: function(){
+        if(angleDownKey.isDown && this.cannon.angle < 90){
+            this.cannon.angle += 1;
+        }
+        if(angleUpKey.isDown && this.cannon.angle > -90){
+            this.cannon.angle -= 1;
+        }
+    },
+
     update: function() {
         if(this.gameover == false){
             //this.fireBullet();
-            this.physics.arcade.overlap(this.sprite, this.bullets, this.enemyHitsPlayer, null, this);
+            //this.physics.arcade.overlap(this.cannonball, this.bullets, this.enemyHitsPlayer, null, this);
             //this.boundsCollision();
             //this.killBullets();
+            this.rotateCannon();
+            this.fireCannonball();
         }
         else{
             this.quitGame();
