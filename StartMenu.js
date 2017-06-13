@@ -1,10 +1,10 @@
-ParticleMotionApplet.StartMenu = function(game) {
+ProjectileMotionApplet.StartMenu = function(game) {
 	this.startBG;
 	this.startPrompt;
     this.ding;
 };
 
-ParticleMotionApplet.StartMenu.prototype = {
+ProjectileMotionApplet.StartMenu.prototype = {
 	
 	create: function (){
         this.ding = this.add.audio('select_audio');

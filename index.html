@@ -6,7 +6,7 @@
         <!-- LOOK AT UP AND RUNNING WITH PHONEGAP BUILD (CHRIS GRIFFITH) -->
         <meta name="viewport" content="width=device-width">
         <link rel="icon" sizes="196x196" href="images/cannon.png">
-        <title>Particle Motion Applet</title>
+        <title>Projectile Motion Applet</title>
         <script src="libs/phaser.js"></script>
         <script src="Boot.js"></script>
         <script src="Preloader.js"></script>
@@ -24,10 +24,10 @@
         <script type="text/javascript">
             window.onload = function(){
                 var game = new Phaser.Game(1600, 800, Phaser.AUTO, 'gameContainer');
-                game.state.add('Boot', ParticleMotionApplet.Boot);
-                game.state.add('Preloader', ParticleMotionApplet.Preloader);
-                game.state.add('StartMenu', ParticleMotionApplet.StartMenu);
-                game.state.add('Game', ParticleMotionApplet.Game);
+                game.state.add('Boot', ProjectileMotionApplet.Boot);
+                game.state.add('Preloader', ProjectileMotionApplet.Preloader);
+                game.state.add('StartMenu', ProjectileMotionApplet.StartMenu);
+                game.state.add('Game', ProjectileMotionApplet.Game);
                 game.state.start('Boot');
             }
         </script>

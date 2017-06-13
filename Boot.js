@@ -1,8 +1,8 @@
-var ParticleMotionApplet = {};
+var ProjectileMotionApplet = {};
 
-ParticleMotionApplet.Boot = function(game) {};
+ProjectileMotionApplet.Boot = function(game) {};
 
-ParticleMotionApplet.Boot.prototype = {
+ProjectileMotionApplet.Boot.prototype = {
 	
 	preload: function() {
         this.load.image('preloaderBar', 'images/loader_bar.png');

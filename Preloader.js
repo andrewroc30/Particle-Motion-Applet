@@ -1,10 +1,10 @@
-ParticleMotionApplet.Preloader = function(game) {
+ProjectileMotionApplet.Preloader = function(game) {
     this.preloadBar = null;
     this.titleText = null;
     this.ready = false;
 };
 
-ParticleMotionApplet.Preloader.prototype = {
+ProjectileMotionApplet.Preloader.prototype = {
 
     preload: function () {
         this.preloadBar = this.add.sprite(this.world.centerX, this.world.centerY, 'preloaderBar');
@@ -17,6 +17,7 @@ ParticleMotionApplet.Preloader.prototype = {
         this.load.image('pellet', 'images/UndertaleBullet.png');
         this.load.image('cannon', 'images/cannon.png');
         this.load.image('cannonball', 'images/cannonball.png')
+        this.load.image('ground', 'images/ground.png')
         this.load.audio('select_audio', 'audio/select.mp3');
         this.load.audio('game_audio', 'audio/bgm.mp3');
     },
