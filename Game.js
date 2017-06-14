@@ -4,8 +4,8 @@ ProjectileMotionApplet.Game = function (game) {
     this.overmessage;
     this.secondsElapsed;
     this.timer;
-    this.music;
     this.ding;
+    this.explosion;
     this.cannonball;
     this.restartKey;
     this.angleUpKey;
@@ -36,6 +36,7 @@ ProjectileMotionApplet.Game.prototype = {
         this.cannonball.velocity = 0;
         this.cannonball.velocity.x = 0;
         this.cannonball.velocity.y = 0;
+        this.cannonball.body.bounce.setTo(.1,.7);
         
         this.power = 0;
 
@@ -45,6 +46,7 @@ ProjectileMotionApplet.Game.prototype = {
         this.ground = this.add.sprite(0, 780, 'ground');
         this.game.physics.arcade.enable([this.ground]);
         this.ground.enableBody = true;
+        this.ground.body.immovable = true;
 
         restartKey = this.input.keyboard.addKey(Phaser.Keyboard.R);
         angleUpKey = this.input.keyboard.addKey(Phaser.Keyboard.UP);
@@ -53,12 +55,12 @@ ProjectileMotionApplet.Game.prototype = {
         powerUpKey = this.input.keyboard.addKey(Phaser.Keyboard.W);
         powerDownKey = this.input.keyboard.addKey(Phaser.Keyboard.S);
 
-        this.music = this.add.audio('game_audio');
-        this.music.play('', 0, 0.3, true);   //marker, position, volume, loop
         this.ding = this.add.audio('select_audio');
+        this.explosion = this.add.audio('explosion_audio');
         
         this.buildWorld();
         alert('CONTROLS:  Use W/S to control the power, use the UP/DOWN arrow keys to adjust the angle, and use F to fire');
+        this.ding.play();
     },
 
     updateSeconds: function(){
@@ -66,45 +68,10 @@ ProjectileMotionApplet.Game.prototype = {
     },
 
     buildWorld: function () {
-        //this.counter = this.add.bitmapText(10, 10, 'eightbitwonder', 'Score: ' + this.score, 0);
+        this.counter = this.add.bitmapText(10, 90, 'eightbitwonder', 'Seconds elapsed: ' + this.score, 0);
         this.angleMessage = this.add.bitmapText(10, 10, 'eightbitwonder', 'Angle: ' + this.cannon.angle, 0);
         this.powerMessage = this.add.bitmapText(10, 50, 'eightbitwonder', 'Power: ' + this.power, 0);
         this.timer.start();
-    },
-
-    quitGame: function(pointer){
-        if(restartKey.isDown){
-            this.ding.play();
-            this.state.start(this.state.current);
-        }
-    },
-
-    /*boundsCollision: function(){
-        if(this.sprite.x <= 0 || this.sprite.x >= 1580 || this.sprite.y <= 0 || this.sprite.y >= 780){
-            if (leftKey.isDown || leftKeyA.isDown){
-                this.sprite.x += 5;
-            }
-            else if (rightKey.isDown || rightKeyD.isDown){
-                this.sprite.x -= 5;
-            }
-            if (upKey.isDown || upKeyW.isDown){
-                this.sprite.y += 5;
-            }
-            else if (downKey.isDown || downKeyS.isDown){
-                this.sprite.y -= 5;
-            }
-        }
-    },*/
-
-    enemyHitsPlayer: function(){
-        this.cannonball.kill();
-        this.gameover = true;
-        this.timer.pause();
-        this.music.stop();
-        this.overmessage = this.add.bitmapText(this.world.centerX-350, this.world.centerY-120, 'eightbitwonder', 'GAME OVER\n\n' + 'Score:  ' + this.score + '\n\n Bullets Dodged:  ' + this.bulletsDodged, 42);
-        this.overmessage.align = "center";
-        this.overmessage.inputEnabled = true;
-        this.overmessage.events.onInputDown.addOnce(this.quitGame, this);     
     },
 
     fireCannonball: function(){
@@ -114,24 +81,28 @@ ProjectileMotionApplet.Game.prototype = {
                 this.cannonball.position.y = 750;
                 this.directionInitial();
                 //this.shootTime = this.game.time.now + 200;
+                this.updateSeconds();
+                //this.explosion.play();
+                console.log('boom');
+                //plays audio several times since there is no pause between shooting
             }
         //}
     },
     
     directionInitial: function(){
-        //have to make this faster
+        //have to make this accurate
         this.cannonball.body.velocity.x = this.power * Math.cos(Phaser.Math.degToRad(this.cannon.angle)) * 10;
         this.cannonball.body.velocity.y = this.power * Math.sin(Phaser.Math.degToRad(this.cannon.angle)) * 10;
     },
     
     directionUpdate: function(){
-        //have to make this faster
+        //have to make this accurate
         this.cannonball.body.velocity.y += 9.81;
     },
 
     updateSeconds: function(){
         this.score++;
-        //this.counter.text = 'Score: ' + this.score;
+        this.counter.text = 'Seconds Elapsed: ' + this.score;
     },
 
     rotateCannon: function(){
@@ -156,10 +127,15 @@ ProjectileMotionApplet.Game.prototype = {
         this.angleMessage.text = 'Angle: ' + this.cannon.angle;
         this.powerMessage.text = 'Power: ' + this.power;
     },
+    
+    decreaseXVelocity: function(){
+        this.cannonball.body.velocity.x = this.cannonball.body.velocity.x * .8;
+    },
 
     update: function() {
         if(this.gameover == false){
-            //this.physics.arcade.overlap(this.cannonball, this.bullets, this.enemyHitsPlayer, null, this);
+            this.physics.arcade.overlap(this.ground, this.cannonball, this.decreaseXVelocity, null, this);
+            this.game.physics.arcade.collide(this.ground, this.cannonball);
             //this.boundsCollision();
             this.rotateCannon();
             this.fireCannonball();

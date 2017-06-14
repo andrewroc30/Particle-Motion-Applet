@@ -12,14 +12,12 @@ ProjectileMotionApplet.Preloader.prototype = {
         this.load.setPreloadSprite(this.preloadBar);
         this.titleText = this.add.image(this.world.centerX, this.world.centerY-220, 'titleimage');
         this.titleText.anchor.setTo(0.5, 0.5);
-        this.load.image('titlescreen', 'images/TitleBG.png');
         this.load.bitmapFont('eightbitwonder', 'fonts/eightbitwonder.png', 'fonts/eightbitwonder.fnt');
-        this.load.image('pellet', 'images/UndertaleBullet.png');
         this.load.image('cannon', 'images/cannon.png');
         this.load.image('cannonball', 'images/cannonball.png')
         this.load.image('ground', 'images/ground.png')
         this.load.audio('select_audio', 'audio/select.mp3');
-        this.load.audio('game_audio', 'audio/bgm.mp3');
+        this.load.audio('explosion_audio', 'audio/cannon.wav');
     },
 
     create: function () {
@@ -27,9 +25,9 @@ ProjectileMotionApplet.Preloader.prototype = {
     },
 
     update: function () {
-        if(this.cache.isSoundDecoded('game_audio') && this.ready == false){
+        if(this.ready == false){
             this.ready = true;
-            this.state.start('StartMenu');
+            this.state.start('Game');
         }
     }
 };

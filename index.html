@@ -10,7 +10,6 @@
         <script src="libs/phaser.js"></script>
         <script src="Boot.js"></script>
         <script src="Preloader.js"></script>
-        <script src="StartMenu.js"></script>
         <script src="Game.js"></script>
         <style>
             body {
@@ -26,7 +25,6 @@
                 var game = new Phaser.Game(1600, 800, Phaser.AUTO, 'gameContainer');
                 game.state.add('Boot', ProjectileMotionApplet.Boot);
                 game.state.add('Preloader', ProjectileMotionApplet.Preloader);
-                game.state.add('StartMenu', ProjectileMotionApplet.StartMenu);
                 game.state.add('Game', ProjectileMotionApplet.Game);
                 game.state.start('Boot');
             }
