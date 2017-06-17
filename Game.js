@@ -34,7 +34,7 @@ ProjectileMotionApplet.Game.prototype = {
         this.cannonball.velocity.y = 0;
         this.cannonball.body.bounce.setTo(.1,.6);
 
-        this.power = 20;
+        this.power = 30;
 
         this.cannon = this.add.sprite(70, 750, 'cannon');
         this.cannon.anchor.setTo(0.5, 0.5);
@@ -59,7 +59,7 @@ ProjectileMotionApplet.Game.prototype = {
     },
 
     buildWorld: function () {
-        this.counter = this.add.bitmapText(10, 90, 'eightbitwonder', 'Seconds elapsed: ' + this.secondsElapsed, 0);
+        this.counter = this.add.bitmapText(10, 90, 'eightbitwonder', 'Seconds Elapsed: ' + this.secondsElapsed, 0);
         this.angleMessage = this.add.bitmapText(10, 10, 'eightbitwonder', 'Angle: ' + this.cannon.angle, 0);
         this.powerMessage = this.add.bitmapText(10, 50, 'eightbitwonder', 'Power: ' + this.power, 0);
         this.timer.start();
@@ -86,12 +86,11 @@ ProjectileMotionApplet.Game.prototype = {
     },
 
     directionUpdate: function(){
-        this.cannonball.body.velocity.y += 9.81;
+        this.cannonball.body.velocity.y += 15;
     },
 
     updateSeconds: function(){
         this.secondsElapsed++;
-        this.counter.text = 'Seconds Elapsed: ' + this.secondsElapsed;
     },
 
     rotateCannon: function(){
@@ -107,7 +106,7 @@ ProjectileMotionApplet.Game.prototype = {
         if(powerUpKey.isDown && this.power < 100){
             this.power++;
         }
-        if(powerDownKey.isDown && this.power > 20){
+        if(powerDownKey.isDown && this.power > 30){
             this.power--;
         }
     },
@@ -115,16 +114,23 @@ ProjectileMotionApplet.Game.prototype = {
     displayInfo: function(){
         this.angleMessage.text = 'Angle: ' + this.cannon.angle;
         this.powerMessage.text = 'Power: ' + this.power;
+        this.counter.text = 'Seconds Elapsed: ' + this.secondsElapsed;
     },
 
     decreaseXVelocity: function(){
         this.cannonball.body.velocity.x = this.cannonball.body.velocity.x * .8;
     },
+    
+    boundsCollision: function(){
+        if(this.cannonball.body.x > 1599 || this.cannonball.body.x < 1){
+            this.cannonball.body.velocity.x = this.cannonball.body.velocity.x * -1;
+        }
+    },
 
     update: function() {
         this.physics.arcade.overlap(this.ground, this.cannonball, this.decreaseXVelocity, null, this);
         this.game.physics.arcade.collide(this.ground, this.cannonball);
-        //this.boundsCollision();
+        this.boundsCollision();
         this.rotateCannon();
         this.fireCannonball();
         this.powerAdjust();
